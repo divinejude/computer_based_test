@@ -1,0 +1,23 @@
+{% extends 'exams/base.html' %}
+{% block body %}
+<br/>
+
+<div align="center" style="color:green; border-radius:10px; background-color:white; width:300px; border:10px">
+    <div align="center">
+        {% for message in messages %}
+            <div style="color:red;">
+                {{message}}
+            </div>
+        {% endfor %}
+        {% if not user.is_authenticated %}
+        <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'exams/form-template.html' %}
+        <div align="center" style="position: relative; text-color: white;">
+            <button type="submit" style="background-color:green; align:center; position: relative;"><strong style="color:white;">Login</strong></button>
+        </div>
+</form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

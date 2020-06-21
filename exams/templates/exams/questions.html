@@ -1,0 +1,27 @@
+{% extends 'exams/base.html' %}
+{% block body %}
+<br/>
+{% if user.is_authenticated %}
+    <form action="{% url 'exams:answer' user.id %}" method="post" enctype="multipart/form-data">
+        {% for question in all_questions %}
+        {{ question.question_no }}. {{ question.Q }}<br/>
+        {% csrf_token %}
+        {% for option in question.option_set.all %}
+            <input type="radio" id="option{{ forloop.counter }}" name="{{ question.id }}" value="{{option.id}}">
+            <label for="option{{ forloop.counter }}">
+                {{ option.option_name}}. {{ option.option }}
+            </label>
+        <br/><br/>
+        {% endfor %}
+        {% endfor %}
+        <div align="center" style="position: relative;">
+            <button type="submit" style="background-color:green; align:center; position: relative;">
+                 <strong style="color: white;" >Submit</strong>
+
+            </button>
+        </div>
+
+    </form>
+
+{% endif %}
+{% endblock %}

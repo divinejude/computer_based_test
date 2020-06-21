@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} CBT {% endblock %}</title>
+</head>
+<body>
+{% load static %}
+<nav style="color:blue; background: white url({% static 'exams/images/nav.jpg' %}); top:3px; height:50px; margin:0">
+    {% if user.is_authenticated %}
+        <a style="color:black; position: relative; top:0;" href="{% url 'exams:answer' user.id %}"><img src="{% static 'exams/images/travello.jpg' %}" style="width: 50px; height: 50px; display: inline; border-radius:25px"/></a>
+    {% else %}
+        <a style="color:black; position: relative; top:0;" href="{% url 'exams:index' %}"><img src="{% static 'exams/images/travello.jpg' %}" style="width: 50px; height: 50px; display: inline; border-radius:25px"/></a>
+    {% endif %}
+        {% if not user.is_authenticated %}
+            <a style="color:black; display: inline; position: absolute; top:20px; right: 10px;" href="{% url 'exams:register' %}"><button style="background-color:yellow; border-radius:100px; color:blue;"><strong>Sign Up</strong> </button> </a> &nbsp;
+        {% endif %}
+        {% if user.is_authenticated %}
+            <div align="right" style="display: inline;">
+                <a style="color:blue; display: inline; position: absolute; top:20px; right: 10px;" href="{% url 'exams:logout' %}"><button style="background-color:red; border-radius:100px; color:white;"><strong>Logout</strong> </button> </a>
+            </div>
+        {% endif %}
+        {% if not user.is_authenticated %}
+            <div align="right" style="display: inline-block;">
+                <a style="color:white; display: inline; position: absolute; top:20px; right: 80px;" href="{% url 'exams:login' %}"><button style="background-color:green; border-radius:100px; color:white;"> <strong>Login</strong></button> </a>
+            </div>
+        {% endif %}
+
+
+
+</nav>
+{% block body %}
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends 'exams/base.html' %}
+{% block body %}
+<br/>
+<div align="center" style="color:green; border-radius:10px; background-color:white; width:300px; border:10px">
+    <div align="center">
+        <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'exams/form-template.html' %}
+        <div align="center" style="position: relative;">
+            <button type="submit" style="background-color:green; align:center; position: relative;"><strong style="color:white;">Register</strong></button>
+        </div>
+</form>
+    </div>
+</div>
+{% endblock %}
