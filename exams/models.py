@@ -27,7 +27,7 @@ class Option(models.Model):
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     taken = models.BooleanField(default=False)
     score = models.IntegerField(default=0)
 

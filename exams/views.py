@@ -1,52 +1,50 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
-
 from .forms import UserForm, LoginForm
 from .models import *
 
 
 # Create your views here.
 def index(request):
-
-    return redirect('exams:logout')
+    return render(request, 'exams/index.html')
 
 
 def answer(request, user_id):
-    template_name = 'exams/index.html'
     user = User.objects.get(pk=user_id)
-    profile = user.profile_set.get(user=user)
+    profile = user.profile
     i = 0
     if request.method == 'POST':
-        for key, value in request.POST.items():
+        if profile.taken:
+            return redirect('exams:index')
+        else:
+            for key, value in request.POST.items():
 
-            if i == 0:
-                i = 1
-            else:
-                question = Question.objects.get(pk=key)
-                option = question.option_set.get(pk=value)
-                if option.is_favorite:
-                    profile.score += 25
-                    profile.save()
-        score = profile.score
-        profile.taken = True
-        profile.save()
-        taken = profile.taken
-        context = {'score': score, 'taken': taken}
-        return redirect(template_name, context)
+                if i == 0:
+                    i = 1
+                else:
+                    question = Question.objects.get(pk=key)
+                    option = question.option_set.get(pk=value)
+                    if option.is_favorite:
+                        profile.score += 25
+                        profile.save()
+            profile.taken = True
+            profile.save()
+            return redirect('exams:index')
     else:
-        score = profile.score
-        taken = profile.taken
-        context = {'score': score, 'taken': taken}
+        return redirect('exams:index')
+
+
+def questions(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    if user.profile.taken:
+        return redirect('exams:index')
+    else:
+        all_questions = Question.objects.all()
+        context = {'all_questions': all_questions}
+        template_name = 'exams/questions.html'
         return render(request, template_name, context)
-
-
-def questions(request):
-    all_questions = Question.objects.all()
-    context = {'all_questions': all_questions}
-    template_name = 'exams/questions.html'
-    return render(request, template_name, context)
 
 
 class UserFormView(View):
@@ -62,8 +60,14 @@ class UserFormView(View):
         if form.is_valid():
             user = form.save(commit=False)
             username = form.cleaned_data['username']
+            last_name = form.cleaned_data['last_name']
+            first_name = form.cleaned_data['first_name']
             password = form.cleaned_data['password']
             user.set_password(password)
+            first_name = str(first_name).capitalize()
+            last_name = str(last_name).capitalize()
+            user.first_name = first_name
+            user.last_name = last_name
             user.save()
             profile = Profile(user=user)
             profile.save()
@@ -72,7 +76,7 @@ class UserFormView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, 'exams/index.html')
+                    return redirect('exams:index')
         return render(request, self.template_name, {'form': form})
 
 
@@ -93,15 +97,11 @@ class LoginFormView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                profile = Profile.objects.get(user=user)
-                taken = profile.taken
-                score = profile.score
-                context = {'taken': taken, 'score': score}
-                return render(request, 'exams/index.html', context)
+                return redirect('exams:index')
         messages.error(request, 'invalid username or password')
         return render(request, self.template_name, {'form': form})
 
 
 def logout1(request):
     logout(request)
-    return render(request, 'exams/index.html')
+    return redirect("exams:index")

@@ -2,22 +2,27 @@
 {% block body %}
 <br/>
 {% if user.is_authenticated %}
+<div align="center">
     <h3>
+    <strong>--------------------------------------------------</strong><br/>
     FULL NAME : {{ user.first_name }} {{ user.last_name }}
-        <br/><br/>
+        <br/>
+    <strong>--------------------------------------------------</strong><br/>
     Email: {{ user.email }}
-        <br/><br/>
-    {% if taken %}
-    Score: {{ score }}
+        <br/>
+    <strong>--------------------------------------------------</strong><br/>
+    {% if user.profile.taken %}
+    Score: {{ user.profile.score }}<br/>
+    <strong>--------------------------------------------------</strong><br/>
     {% else %}
-     <a style="color:blue;" href="{% url 'exams:questions' %}">
+     <a style="color:blue;" href="{% url 'exams:questions' user.id %}">
         <button style="background-color:red; border-radius:100px; color:white;">
             <strong>Start</strong>
         </button>
     </a>
     {% endif %}
     </h3>
-
+</div>
 
 
 {% endif %}
