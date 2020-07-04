@@ -2,14 +2,16 @@
 {% block body %}
 <br/>
 {% if user.is_authenticated %}
+<p>Questions</p>
+{% if all_questions %}
     <form action="{% url 'exams:answer' user.id %}" method="post" enctype="multipart/form-data">
         {% for question in all_questions %}
-        {{ question.question_no }}. {{ question.Q }}<br/>
+        {{ question.id }}. {{ question.Q }}<br/>
         {% csrf_token %}
         {% for option in question.option_set.all %}
             <input type="radio" id="option{{ forloop.counter }}" name="{{ question.id }}" value="{{option.id}}">
             <label for="option{{ forloop.counter }}">
-                {{ option.option_name}}. {{ option.option }}
+                 {{ option.option }}
             </label>
         <br/><br/>
         {% endfor %}
@@ -22,6 +24,8 @@
         </div>
 
     </form>
-
+{% else %}
+<p>no question available</p>
+{% endif %}
 {% endif %}
 {% endblock %}

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
+from django.http import HttpResponseRedirect
 from .forms import UserForm, LoginForm
 from .models import *
 
@@ -12,15 +13,19 @@ def index(request):
 
 
 def answer(request, user_id):
-    user = User.objects.get(pk=user_id)
+    user = get_object_or_404(User, pk=user_id)
     profile = user.profile
     i = 0
+    # checking if request is a post or get request
     if request.method == 'POST':
+        # accounting for multiple submission if the user clicks back. if user has submitted before, it redirects the
+        # user to the index page and if not the form can be processed under the else statement. profile.taken will be
+        # set to True if the user submits for the first time
         if profile.taken:
             return redirect('exams:index')
         else:
             for key, value in request.POST.items():
-
+                # this condition skips the first key of the dictionary return by the request.post
                 if i == 0:
                     i = 1
                 else:
@@ -31,15 +36,15 @@ def answer(request, user_id):
                         profile.save()
             profile.taken = True
             profile.save()
-            return redirect('exams:index')
+            return HttpResponseRedirect(reverse('exams:index'))
     else:
-        return redirect('exams:index')
+        return HttpResponseRedirect(reverse('exams:index'))
 
 
 def questions(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     if user.profile.taken:
-        return redirect('exams:index')
+        return HttpResponseRedirect(reverse('exams:index'))
     else:
         all_questions = Question.objects.all()
         context = {'all_questions': all_questions}
@@ -56,6 +61,7 @@ class UserFormView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        print(request.POST)
         form = self.form_class(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -76,7 +82,7 @@ class UserFormView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('exams:index')
+                    return HttpResponseRedirect(reverse('exams:index'))
         return render(request, self.template_name, {'form': form})
 
 
@@ -97,11 +103,11 @@ class LoginFormView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('exams:index')
+                return HttpResponseRedirect(reverse('exams:index'))
         messages.error(request, 'invalid username or password')
         return render(request, self.template_name, {'form': form})
 
 
 def logout1(request):
     logout(request)
-    return redirect("exams:index")
+    return HttpResponseRedirect(reverse('exams:index'))

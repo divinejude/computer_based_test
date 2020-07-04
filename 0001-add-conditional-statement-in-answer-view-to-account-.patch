@@ -1,0 +1,465 @@
+From 32a598ec0946c81f0f871cfd4cbb701b4f8b1349 Mon Sep 17 00:00:00 2001
+From: OKEKE DIVINE <okekedivinejude@gmail.com>
+Date: Tue, 23 Jun 2020 08:34:35 +0100
+Subject: [PATCH] add conditional statement in answer view to account for
+ submitting multiple times
+
+---
+ .idea/vcs.xml                                 |   6 ++
+ .idea/workspace.xml                           |  13 ++-
+ cbt/__pycache__/settings.cpython-38.pyc       | Bin 2287 -> 2308 bytes
+ db.sqlite3                                    | Bin 155648 -> 159744 bytes
+ exams/__pycache__/models.cpython-38.pyc       | Bin 1781 -> 1791 bytes
+ exams/__pycache__/urls.cpython-38.pyc         | Bin 560 -> 590 bytes
+ exams/__pycache__/views.cpython-38.pyc        | Bin 3241 -> 3271 bytes
+ exams/migrations/0004_auto_20200621_0217.py   |  21 +++++
+ .../0004_auto_20200621_0217.cpython-38.pyc    | Bin 0 -> 784 bytes
+ exams/models.py                               |   2 +-
+ exams/templates/exams/index.html              |  17 ++--
+ exams/urls.py                                 |   2 +-
+ exams/views.py                                |  76 +++++++++---------
+ 13 files changed, 90 insertions(+), 47 deletions(-)
+ create mode 100644 .idea/vcs.xml
+ create mode 100644 exams/migrations/0004_auto_20200621_0217.py
+ create mode 100644 exams/migrations/__pycache__/0004_auto_20200621_0217.cpython-38.pyc
+
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+index 0000000..94a25f7
+--- /dev/null
++++ b/.idea/vcs.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+index 9e97122..5c1aacc 100644
+--- a/.idea/workspace.xml
++++ b/.idea/workspace.xml
+@@ -1,7 +1,14 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="a3f7c6db-8564-4fb0-a081-a4f55bbdb18c" name="Default Changelist" comment="" />
++    <list default="true" id="a3f7c6db-8564-4fb0-a081-a4f55bbdb18c" name="Default Changelist" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/exams/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/models.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/exams/templates/exams/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/exams/templates/exams/index.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/exams/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/urls.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/exams/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/views.py" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -15,7 +22,11 @@
+       </list>
+     </option>
+   </component>
++  <component name="Git.Settings">
++    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
+   <component name="ProjectId" id="1dX2FsXfHPgCUWWQY5Bj4w523yT" />
++  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showExcludedFiles" value="true" />
+diff --git a/cbt/__pycache__/settings.cpython-38.pyc b/cbt/__pycache__/settings.cpython-38.pyc
+index e66b0f20f5e8e18d7508a6bd10ee90de87d0087a..c75d2a09cea1a65d128a59742a7906ec33efa322 100644
+GIT binary patch
+delta 68
+zcmaDa*doLo%FD~e00a{*e%Q!u$f0fLY!wq)oLW>IQwk(wTvCg(OY#e1{8Gym((-ds
+UfI=myxdl0iC8@=egE-~_0PWWo-2eap
+
+delta 47
+zcmZn>dN0Tw%FD~e00ir%yxGWY$RVcbY!wq)oLW>IQwk(wTvCg(OY#dQr*q5&07U-}
+ASO5S3
+
+diff --git a/db.sqlite3 b/db.sqlite3
+index c60d4912014a9d01873aefdbb4d5437178662ec5..8a4825dc1e8eadc94b32f0aefe5f42f6044d6d36 100644
+GIT binary patch
+delta 1942
+zcmb_dZ){Ul6o0p`?d$)$!Tu;RDRDR!U3cIAwqr;K>*%l@8{4`zlG3$Z_xitEN4o_B
+z15FGhDi-n*Gya%NjDZAjn0{lRiGs#`Fec&`)WrCK50V%SAtuE8S|BWZ;0rIg=bd}+
+zFX#Nux#!$_=$ih}Z~6~ks$U@pq79E%@lfG0c>Hx1tX$r=2+2mn^)gl0t}<L-qU$~|
+zbaypsh~_R=tQ1a9BZRn6c&3mIF^EA(VCWEHXi=GTAfbbyt%!EgqLX24w1Z`Nap}Q2
+zN5eKv{Ti|jR4s&ZQ`reA6{8wRvI9gD;Y>Um3P;mYCX~v?Tj0lL6S)Ck7n7lx>DUz2
+ztRY!YzHVAuKH5108oxm5eQPMgZ36DKd}jXJ+-;gS%7)vR=?z2Oyg-?W`F59XZSxyC
+zz3avD@rB0V_FYA3cdlo$CqE*!?#V{7eUs^-T{D@Se;~~a1>el~JA$LpaLK*h&BXKe
+z-0VnD>|}NZx*rF{S`m(jbMm}R6nMn3(P(ra8B3Pcr(S8RM$Flr$ZkV|;9!tzO3KW|
+z=HuELmHH}`w-qV@M^9Rqibmc0{iC~Ed!uwb$qtMLeB(RjByT<_^!u`W&vXX$r}Cxk
+z0nhjzkK6B$`V&u3sd?j_EN^2(#EF>7BPO25dz?+=X}f^7jL%4^LWh*GrelT4Y}6VF
+z=cGb7CC$aG*$L}(Val2vPsAbxYq(%VCB!+zUe=Dbmgg7Z^^BFaJ6XYrcpJ+y4&G6|
+zzi_^`N;{m0wh1E5JJ|A<rxxpJD~+7WDsSWMNMQML;`Cw-%OEGq*?57m3tV}_nNRB;
+zC6g9#1P-1r|8xc!D7Z|(-{H4#dC740GK3Vl7T_dPTCyJhwM#1(-@2qTo;F5I=S=4+
+z%syZx!M4ht2slBhP3MRM^7k%K(mGt)W^Y@0+4w@+s!|KltEO#-HQT7>wl;9YBOgeE
+z4PcYJkOm1&A)Jh5%9nLbvLOSSv?D&x;7D(Iqjn3`P7vS+Kdo4PEfXt-LaXeB=%?3k
+zYk~LVyD4x)jWtl&p9b$UWDE4m)L9^^;a=!p+K3vVNkamlZ>h@la^xcT1cP!ibx8ru
+zz#InIpg~RQL5m{R%X7=%DA}UBAXC>cL~qtzz@?wiwT4>sgbQwp13h?Lx3wdz7K?*p
+zMN$6zJJ7u;yk0@JuR>N!hvA((E@Gay^SpfWCfHiZ-2^9u2AvKPmR@+oc+*Tlt>Kv7
+ztAp6-J?h}$E|bRlj>eU+BZ)0cL{e<5m`|tkbYwa+F2#iSctl7t(Uh;xo%S)kC0}1q
+z3hwZ51O8q<*f+=q{lUb*u$K*_Jw>nIo$&T~xnLqd`w}iLIGhtbDaT}VY$!X%j?M+g
+z`X|EvL1{qpupX%>jWKR{r%9DO*q;t2T*#LW%z6DIY#=e249sDD*fksQ2WEZDP$D=y
+zl<*A?(!L$hWU#M4g<T>~20d(Wu>*-uG`PreJUZNEtOgb<Nwa*SP)ud)S$nZmjI+6X
+zE}rB{shQj)7t7(myw5c<*=15q4L^sFc;zClT}!-RXE;<jW>C#)OghUI0`7z#S$?rx
+zshH|ii<bUY(hHt-f+hv@tZW!74_;PjL4(e6hk#$hci{wFgne)`)LZT>ZM6PqkvDg$
+z%=}Z?HoZ)`9#$<rjHj3zm2LT=QMFEXcdD+EL>*C~km^2cGQ+C`1<w=k9$bNc!C&DO
+z_zgV2RDb9s3{#Ybz|9b)bQ%qz(gWg#2L4RwbUHw3wHmAdEv2eLc9HPU>V`(6RyOqb
+zIaF|JimaJXQ=q0O52f+}JX$NJ-Ku|JlL6}#yhXq}@IUx3ybJ$;x8W_!;VZaVX=}^_
+XOY9O$>;N~hT2a-cB1x5+1bWr~Zt)3-
+
+delta 623
+zcmY+CPe>GT6vuyWelt7nI<s#U7lbza18D}e&iwZOP?mw!NyM(jy6I}luDh&mRtIsD
+zIwVLo!a!JVuo2Y3KTC|KGy*{aPhIL%(5ViB6y#;;XVReu-^Y6&9`8LKZ{~}8X3PC3
+z;Oi%Zv~#s_0ax$B=@9g<4OEc&JvB?#PE}i5c0JYFv4sDE==0H&kiMPDP9*b%-0)~7
+zE%_-u14Cn}@sV6IHIyA4PiAr>0eqq=v>8&x$(zaIM7kg~N;Cx4JEg&T*jWVsx-JfQ
+zC8b30y7#5Jubxv%d`?cWN=qX?y~T)|EM`VnFcM~w5VH=JULR6s>V_H8gDf10GiJSc
+zTH%y2GZHrSa8QrNqI%dGdv-{9EpHM|1mi|RH$qnP@(b;VCQKs|jK>o3sP%DKcS*QQ
+z@N3muUc-fQLv?rM+G?FzP=3_!6XLJ|Xra*MTpff(StLXdoe$k0L;F3oOKvm_nC+QN
+z-N>ZJ(^JXhe|Pyy?D;GlmyW_$Sy&fK;(6KL%fPHyn(mUFTUnTAG=PJ)T!vV+Rc}Lk
+za0Q-obk~+wIr7b%MLWL<qCLF{4`{%hx8*H}ITu%fxt;tDEJih#XO4J#aJGI&m60da
+zZf(lr%z1=6Qk~0NBX|WLJDMg`yjGvq>(rVA7icc*Aow2d<1kk6GIsFcezd;_1=ZfD
+z7ku`mPT?(;@S7v+!U1ahGyd5L{DpgbvCl_~HHi`h5b2?(f=IzFsQ8IUxDEIlw;iQV
+H_=$f23@@z!
+
+diff --git a/exams/__pycache__/models.cpython-38.pyc b/exams/__pycache__/models.cpython-38.pyc
+index 4941647933931b43f69cb4caa394f67874c4dda1..88252c5741ca5139a84f33a0f5edf5ba4e765ef4 100644
+GIT binary patch
+delta 42
+vcmey$`=6ILl$V!_0SJz7c^Bufk@p)b|1Dnsyws3<AmNsonv*h_gY7K<EiDej
+
+delta 32
+lcmey*`<0hBl$V!_0SK7*-o@E&<o(9VTBHi(P8MQ&3jl`v2pa$Z
+
+diff --git a/exams/__pycache__/urls.cpython-38.pyc b/exams/__pycache__/urls.cpython-38.pyc
+index 972545c50365e5a01f1b516aa86ef8c078015454..1dc6d27eb062725280fe90eaa6152299c48a4e54 100644
+GIT binary patch
+delta 69
+zcmdnMa*l;Jl$V!_0SNqme29Czkyn6GOd(FgKES55IJGD~GsQ02K-V%>TT_3sJmXGA
+Yo5?pB6*)^%a|?13OHzv`|70`=0Ka4vr~m)}
+
+delta 39
+ucmX@dvVny+l$V!_0SG4Cc^h|rBd-7>6HnY^W5%6~Mw8z%Do&PQG6MkGYzqbe
+
+diff --git a/exams/__pycache__/views.cpython-38.pyc b/exams/__pycache__/views.cpython-38.pyc
+index a6db52f8036f9dcc4703fcab1655642372371d66..e7067ab310aa7625d9a6d59723bf90bf87afee8b 100644
+GIT binary patch
+literal 3271
+zcmbtW&2l715w5EKonQT|c7uf_SOOfx7$dJ?!GW*|2VT}-h+zq>?TBGaNAFZg>QVRf
+zY;{SyC|W1^>NnsZank{wz|X(~)Rog7@zE!~tky^x`9eTXRCZQQRdv>v`DN8dy<VH)
+z`SS1o{&Tm_*uSWA{qfOx53Twugk+NEtl%TgNf)^&ypdP<BfkhnfwOseSVW_!h(~eJ
+z8nv9w&)Y?3)PWwzFz*(<QLpHa`mP`4D^Hn>W$QCGT9s|t!Fx@1We@N5518!BmCu-5
+zQJoWSbPN4exrY9l>u<<)c?;ui%Z+U|xcv$qvH`bop{gp~Rn@?=-SoihshP<psZln_
+z%iU~dL%hlZgTF(qW>RSzYb7(SCdRJqDwCAYrqGj8Cl4Py#ESmMnR@Yx)AGW`A5}^}
+zE_GpBzo+F$#Tfqjga#}g(mk~I(JF%2uo~!{2zV-nN2}^(T2yal`1;GuJyYZZu0xDE
+z=Qh&n`GKm;In%4KeD&`8TVwiUH9mkGKT_4cDd*#%dU1cJ%;EjmsA8UDf7N*M%#7X2
+z<3o5{ZO;E<1NRN`pb`*_>vhP9)2WZAg+_69zWxJ>VN*U8HJAKzek^J+^^QF$j{TZV
+zed+BB{kPhi2Ks>srGLV=v9oD(8lSO8?9<^`90$i??Ms1iPh@cHKi@Jfw_f1Zi|T0F
+z#_FN##dSRG=&joG*|aOex0zr`xAsnZXN<GwTQaJ>Bv|wp-<!n?O)}sa4*{E)?`s0x
+z`cM9_{q(DjgJH{UUeoSh-Gz8M=v$w_v{4h|%6bU6jpn-C$#P}GLYci%+Q6jyYNjL1
+z(YI;UAOp&kjsHlY$;z2+mvee26{dHxD%nX7ON~J`s3xUW*00h-HE8J-njKN-l1y5k
+z6#Xr-@yvSr3IRGy^8;mL7j#-VY*u#BZ^Rmn57SxoLTQkcRo{nTyw5}K^EPBG)<w)i
+z(Ra3fW8-b1e~58Qv8E)ujP<Y3G0bomY2hM`SnGQR(WAJUU>crAXAIHzYA@r*zVwd+
+z6W6Q`YX8LBMil`5!BF4AO8O3j?WK91EcQ|zZ8V8~X=swYrDK}#4H5)~{x%7R_IF65
+zSXmD%IZ_NlhoYuk>(@xULH|dSa%R*^V|xn%B(t<oH*srSe)|WQRS|xScX<rZ+K@ii
+z4`7*)`T9cyc@NEDt=Nc5HWJDk`I3(UDWr$OgY=gH-jNIeLu9*@T2v3HUL4(PwyxD~
+zRvDdAw)|)Ze>w=3f<lENKyw7V2c>4Gfc6aJqu_vELh@Q<oFG3JL+jHz=bmlTJDKEZ
+zRXL>eo0tr{U#Wbj0qrNS+<-)X6SkkBRg?(~*>bdc-SbUQV#z-$5SRY_6CLue=2K1{
+z*5Xv0G5rOV3CX2E$?%|~P~2rG8Kn8p0;dJgLZ^k$K<?9^j?QqLn6M5{xJ$MWdT^l!
+zb%+8GBi+2Dh0z|B1=FrQ8R0u99v7BQ?bnfvKNtA6C)s`r{&>@_{=)QtpLZfKt1nwF
+zsaG7LIBXV(4m!ifsNmtGEQ-w7m^ezAWLp5%xTFHonO^Ae9C*JdwM5Z=4QQMT{d2tZ
+zJ0yq%nm`|{>7SDB%14X}0iI`4e-Ad>o#ZN=DVfOBq_&G1k}TG=9+JhjC+R#hm~f=@
+zFKCr5nif52%9N&ru`R5bPE2;FG{v!@5AoY&0ZPx?q*MKI{xr;Sj?!Yyvd(44Kssx#
+zRU3a^R))q^uR}D1=^|4Wzb+^gQssdq7DT6zG=8+Ulu5M8a1h%#aWE!{Z6`@l%7a`%
+z?<S}eX--%tiSCdG4l>GOm!$gFq+Pk@G^&RBEr=hZRa8ib#lDDrXPv;X^!zVO?p+@3
+zj>;FuwYxt2pY+w_wSGu~D0ppiZeK*rPtdNYxwhoW*SJXmzvSi~I#;!W7%Dk<<~dD3
+z^NpxI9L^q?64ZfX%7=A;qW_`s!Hd8#C1{RygW`{)Avh!U#EvyB3HCO1Xb=srrTx43
+zvdjIWd)dro`uzos?w9)hBD))Aw6B=qQdvKu*;h$S5wigf%2HpIHJk!B68egC#KN0M
+zQtJE(t=fQ~B8T6#MD6mU^<`u)a#cUZaQy*^-;n5%_;1tlw-~&Qww#t^{o3u2Ht7mJ
+zB{kg+PpAwcU{s`VM|5Zogr?v&+@_=J#x8AyoWx!BtqlKN<V?)<@6a0#?%2MZrnB90
+zlTJ#VJ<|@@Tg%2xx*|7Wa1o&I;VRxttoBN6CI{x?cyT8*F>bVRF`&6;?y8y6*+kPp
+zVFNmps)o)49xhd-RC(ntp6*8CPFzP;P0%=ZuWjs-<u-n&sTIGZn_WevwaYi~>+)3|
+O`}p0BJFDMaz4IS+Cdy0z
+
+literal 3241
+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
+
+diff --git a/exams/migrations/0004_auto_20200621_0217.py b/exams/migrations/0004_auto_20200621_0217.py
+new file mode 100644
+index 0000000..5c5a782
+--- /dev/null
++++ b/exams/migrations/0004_auto_20200621_0217.py
+@@ -0,0 +1,21 @@
++# Generated by Django 3.0.5 on 2020-06-21 01:17
++
++from django.conf import settings
++from django.db import migrations, models
++import django.db.models.deletion
++
++
++class Migration(migrations.Migration):
++
++    dependencies = [
++        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
++        ('exams', '0003_profile_taken'),
++    ]
++
++    operations = [
++        migrations.AlterField(
++            model_name='profile',
++            name='user',
++            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
++        ),
++    ]
+diff --git a/exams/migrations/__pycache__/0004_auto_20200621_0217.cpython-38.pyc b/exams/migrations/__pycache__/0004_auto_20200621_0217.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..a7865b2b5febe655a78504bedd1b28af29659447
+GIT binary patch
+literal 784
+zcmYjPOK;Oa5Z?9r6*r+#g+NFkam^)iLj_WWP(u>nKvRh{7t3PhWG7KvzwkOLJ;SyC
+z0gn6t{>)xEap4Cb@tAee$5``eW_G+Y-^@;1EsvnIzyEqaF$npgo!erfbA&1n5d;x5
+zAt?<g)wYosDGOL?24?NE#0u=!M3}<*OoRn2c0RGd5o|&__D}qubf|JARMje5%8sGD
+zbhRv_YL#bF*=a5yk>k0}yDbhnN2u~80+4_T5*Wa~m|(^BS1Rbz2pp{C3PUhx#2)O#
+z&A1V_;yXG+n3smIF4>X>yTZm!9Mw3!DvLc>@G(lI+Vg$?2`|cgu}Xkf(HUgQ*}BSH
+zODHk7k!Kv6gbI{V<sF6ubkjVGQcz}%)?x*T7<byr<#n8M<#CRAYrL1MCg&g4QKEA>
+zFBwu&cjb9h6wwUN1r(48$mSO%E`zAu{`B+>pH4>a`0>eb^j0;mGgcs#*H0=aU+Ida
+zUX*H`WN?}z)G=j?ILel}GQ>=|b>lc{<qZ0hL4P<>US7a<{NG6V5HG0VcQ7~%r^r}_
+zns+z^c~<2`IEM4bi#!n+svs?rr~(<zXH{5FFud7ih_gK4(Ynfc&+qyE)80P!d;8D2
+z#YJgh6&F?RX@hyx_-ooGHSoLl$NX2HcU-lz>AXA7v&Ci<jcr8C>Zxt`KDZ8cH_xYg
+g#j?Dw>F8=V#5UF=j4Ai|W+N~32BeM9q;2Z5|1oddBLDyZ
+
+literal 0
+HcmV?d00001
+
+diff --git a/exams/models.py b/exams/models.py
+index 484a60d..d80130f 100644
+--- a/exams/models.py
++++ b/exams/models.py
+@@ -27,7 +27,7 @@ class Option(models.Model):
+ 
+ 
+ class Profile(models.Model):
+-    user = models.ForeignKey(User, on_delete=models.CASCADE)
++    user = models.OneToOneField(User, on_delete=models.CASCADE)
+     taken = models.BooleanField(default=False)
+     score = models.IntegerField(default=0)
+ 
+diff --git a/exams/templates/exams/index.html b/exams/templates/exams/index.html
+index 5931367..22606fd 100644
+--- a/exams/templates/exams/index.html
++++ b/exams/templates/exams/index.html
+@@ -2,22 +2,27 @@
+ {% block body %}
+ <br/>
+ {% if user.is_authenticated %}
++<div align="center">
+     <h3>
++    <strong>--------------------------------------------------</strong><br/>
+     FULL NAME : {{ user.first_name }} {{ user.last_name }}
+-        <br/><br/>
++        <br/>
++    <strong>--------------------------------------------------</strong><br/>
+     Email: {{ user.email }}
+-        <br/><br/>
+-    {% if taken %}
+-    Score: {{ score }}
++        <br/>
++    <strong>--------------------------------------------------</strong><br/>
++    {% if user.profile.taken %}
++    Score: {{ user.profile.score }}<br/>
++    <strong>--------------------------------------------------</strong><br/>
+     {% else %}
+-     <a style="color:blue;" href="{% url 'exams:questions' %}">
++     <a style="color:blue;" href="{% url 'exams:questions' user.id %}">
+         <button style="background-color:red; border-radius:100px; color:white;">
+             <strong>Start</strong>
+         </button>
+     </a>
+     {% endif %}
+     </h3>
+-
++</div>
+ 
+ 
+ {% endif %}
+diff --git a/exams/urls.py b/exams/urls.py
+index a40f592..43ea511 100644
+--- a/exams/urls.py
++++ b/exams/urls.py
+@@ -7,7 +7,7 @@ urlpatterns = [
+     url(r'^register$', views.UserFormView.as_view(), name='register'),
+     url(r'^logout$', views.logout1, name='logout'),
+     url(r'^login$', views.LoginFormView.as_view(), name='login'),
+-    url(r'^questions/$', views.questions, name='questions'),
++    url(r'^(?P<user_id>[0-9]+)/questions/$', views.questions, name='questions'),
+     url(r'^(?P<user_id>[0-9]+)/$', views.answer, name='answer'),
+ 
+ ]
+diff --git a/exams/views.py b/exams/views.py
+index ea25733..b4a9be3 100644
+--- a/exams/views.py
++++ b/exams/views.py
+@@ -1,52 +1,50 @@
+ from django.contrib import messages
+ from django.contrib.auth import authenticate, login, logout
+-from django.shortcuts import render, redirect
++from django.shortcuts import render, redirect, get_object_or_404
+ from django.views.generic import View
+-
+ from .forms import UserForm, LoginForm
+ from .models import *
+ 
+ 
+ # Create your views here.
+ def index(request):
+-
+-    return redirect('exams:logout')
++    return render(request, 'exams/index.html')
+ 
+ 
+ def answer(request, user_id):
+-    template_name = 'exams/index.html'
+     user = User.objects.get(pk=user_id)
+-    profile = user.profile_set.get(user=user)
++    profile = user.profile
+     i = 0
+     if request.method == 'POST':
+-        for key, value in request.POST.items():
+-
+-            if i == 0:
+-                i = 1
+-            else:
+-                question = Question.objects.get(pk=key)
+-                option = question.option_set.get(pk=value)
+-                if option.is_favorite:
+-                    profile.score += 25
+-                    profile.save()
+-        score = profile.score
+-        profile.taken = True
+-        profile.save()
+-        taken = profile.taken
+-        context = {'score': score, 'taken': taken}
+-        return redirect(template_name, context)
++        if profile.taken:
++            return redirect('exams:index')
++        else:
++            for key, value in request.POST.items():
++
++                if i == 0:
++                    i = 1
++                else:
++                    question = Question.objects.get(pk=key)
++                    option = question.option_set.get(pk=value)
++                    if option.is_favorite:
++                        profile.score += 25
++                        profile.save()
++            profile.taken = True
++            profile.save()
++            return redirect('exams:index')
+     else:
+-        score = profile.score
+-        taken = profile.taken
+-        context = {'score': score, 'taken': taken}
+-        return render(request, template_name, context)
++        return redirect('exams:index')
+ 
+ 
+-def questions(request):
+-    all_questions = Question.objects.all()
+-    context = {'all_questions': all_questions}
+-    template_name = 'exams/questions.html'
+-    return render(request, template_name, context)
++def questions(request, user_id):
++    user = get_object_or_404(User, pk=user_id)
++    if user.profile.taken:
++        return redirect('exams:index')
++    else:
++        all_questions = Question.objects.all()
++        context = {'all_questions': all_questions}
++        template_name = 'exams/questions.html'
++        return render(request, template_name, context)
+ 
+ 
+ class UserFormView(View):
+@@ -62,8 +60,14 @@ class UserFormView(View):
+         if form.is_valid():
+             user = form.save(commit=False)
+             username = form.cleaned_data['username']
++            last_name = form.cleaned_data['last_name']
++            first_name = form.cleaned_data['first_name']
+             password = form.cleaned_data['password']
+             user.set_password(password)
++            first_name = str(first_name).capitalize()
++            last_name = str(last_name).capitalize()
++            user.first_name = first_name
++            user.last_name = last_name
+             user.save()
+             profile = Profile(user=user)
+             profile.save()
+@@ -72,7 +76,7 @@ class UserFormView(View):
+             if user is not None:
+                 if user.is_active:
+                     login(request, user)
+-                    return render(request, 'exams/index.html')
++                    return redirect('exams:index')
+         return render(request, self.template_name, {'form': form})
+ 
+ 
+@@ -93,15 +97,11 @@ class LoginFormView(View):
+         if user is not None:
+             if user.is_active:
+                 login(request, user)
+-                profile = Profile.objects.get(user=user)
+-                taken = profile.taken
+-                score = profile.score
+-                context = {'taken': taken, 'score': score}
+-                return render(request, 'exams/index.html', context)
++                return redirect('exams:index')
+         messages.error(request, 'invalid username or password')
+         return render(request, self.template_name, {'form': form})
+ 
+ 
+ def logout1(request):
+     logout(request)
+-    return render(request, 'exams/index.html')
++    return redirect("exams:index")
+-- 
+2.26.1.windows.1
+

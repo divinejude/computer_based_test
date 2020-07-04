@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="a3f7c6db-8564-4fb0-a081-a4f55bbdb18c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cbt/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cbt/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exams/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exams/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exams/templates/exams/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/exams/templates/exams/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exams/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exams/templates/exams/questions.html" beforeDir="false" afterPath="$PROJECT_DIR$/exams/templates/exams/questions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exams/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exams/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/exams/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +20,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -35,10 +38,11 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/admin" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\user\Desktop\New folder\templates\cbt\templates\admin" />
       <recent name="C:\Users\user\Desktop\cbt\exams\templates\exams" />
       <recent name="C:\Users\user\Desktop\cbt\exams\static\exams\images" />
     </key>
@@ -61,5 +65,14 @@
       <screen x="0" y="0" width="1473" height="864" />
     </state>
     <state x="494" y="242" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1473.864@0.0.1473.864" timestamp="1592584601008" />
+    <state x="543" y="151" key="#com.intellij.ide.util.MemberChooser" timestamp="1593817323689">
+      <screen x="0" y="0" width="1474" height="864" />
+    </state>
+    <state x="543" y="151" key="#com.intellij.ide.util.MemberChooser/0.0.1474.864@0.0.1474.864" timestamp="1593817323689" />
+    <state x="399" y="185" width="673" height="678" key="search.everywhere.popup" timestamp="1593005596083">
+      <screen x="0" y="0" width="1474" height="864" />
+    </state>
+    <state x="399" y="185" width="672" height="678" key="search.everywhere.popup/0.0.1473.864@0.0.1473.864" timestamp="1592899334785" />
+    <state x="399" y="185" width="673" height="678" key="search.everywhere.popup/0.0.1474.864@0.0.1474.864" timestamp="1593005596083" />
   </component>
 </project>
