@@ -26,7 +26,7 @@ class Option(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     taken = models.BooleanField(default=False)
-    score = models.IntegerField(default=0)
+    score = models.FloatField(default=0)
 
     def __str__(self):
         return str(self.user.first_name) + ' ' + self.user.last_name

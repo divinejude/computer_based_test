@@ -143,6 +143,7 @@ class Answer(TestCase):
         self.assertContains(response, 'Email: {}'.format(user.email))
         self.assertContains(response, 'Score: {}'.format(0))
         self.assertContains(response, 'Logout')
+
     def test_right_answer(self):
         user = create(False)
         question = Question.objects.create(Q='question')
@@ -153,7 +154,7 @@ class Answer(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'FULL NAME: {} {}'.format(user.first_name, user.last_name))
         self.assertContains(response, 'Email: {}'.format(user.email))
-        self.assertContains(response, 'Score: {}'.format(25))
+        self.assertContains(response, 'Score: {}'.format(100))
         self.assertContains(response, 'Logout')
 
     def test_answer_if_user_has_taken_exam(self):

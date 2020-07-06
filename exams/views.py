@@ -15,6 +15,7 @@ def index(request):
 def answer(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     profile = user.profile
+    no_of_questions = len(Question.objects.all())
     i = 0
     # checking if request is a post or get request
     if request.method == 'POST':
@@ -32,7 +33,7 @@ def answer(request, user_id):
                     question = Question.objects.get(pk=key)
                     option = question.option_set.get(pk=value)
                     if option.is_favorite:
-                        profile.score += 25
+                        profile.score += (100/no_of_questions)
                         profile.save()
             profile.taken = True
             profile.save()
